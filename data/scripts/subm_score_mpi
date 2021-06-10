@@ -1,0 +1,19 @@
+#!/bin/bash
+#SBATCH -J score_mpi2
+#SBATCH -A LEE-WJM41-SL2-CPU
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --time=12:00:00
+#SBATCH --mail-user=wjm41@cam.ac.uk
+#SBATCH --mail-type=END,FAIL
+#SBATCH -p cclake
+
+. /etc/profile.d/modules.sh
+module purge
+module load rhel7/default-ccl
+module load miniconda/3
+source activate felix_md
+
+echo $1
+python score_mpi.py $1
