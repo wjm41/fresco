@@ -1,0 +1,19 @@
+#!/bin/bash
+#SBATCH -J gen_kde
+#SBATCH --time=6:00:00
+#SBATCH -A LEE-SL3-CPU
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=56
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=wjm41@cam.ac.uk
+##SBATCH --no-requeue
+#SBATCH -p cclake
+
+. /etc/profile.d/modules.sh
+module purge
+module load rhel7/default-ccl
+module load miniconda/3
+source activate felix_md
+
+python gen_kde.py $1
