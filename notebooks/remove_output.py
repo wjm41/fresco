@@ -40,7 +40,7 @@ def main():
     )
 
     parser.add_argument(
-        "-notebook", nargs="+", help="The notebook to be cleared."
+        "-notebook", help="The notebook to be cleared."
     )
     parser.add_argument(
         "-o", "--output", dest="output_filename",
