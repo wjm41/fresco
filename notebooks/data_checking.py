@@ -68,22 +68,27 @@ for folder in tqdm(existing_dirs, smoothing=0):
     pairs = [file for file in os.listdir(
         folder) if "pairs_mpi_" in file]
     scores = [file for file in os.listdir(
-        folder) if "_mac" in file and ".csv" in file]
+        folder) if "_pro" in file and ".csv" in file]
 
     not_scored = True
 
-    if os.path.isfile(folder+'/scores_mac.csv'):
-        not_scored = False
+    # if os.path.isfile(folder+'/scores_mpro.csv'):
+    #     not_scored = False
     # some dirs had MPI processes without pharmacophores
-    elif len(pairs) <= len(scores) and len(pairs) != 0:
+    if len(scores) > 0:
         not_scored = False
-    elif len(pairs) > len(scores):
-        mpi_dirs_to_score.append(folder)
-    else:
-        dirs_to_score.append(folder)
+    # elif len(pairs) <= len(scores) and len(pairs) != 0:
+    #     not_scored = False
+    # elif len(pairs) > len(scores):
+    #     mpi_dirs_to_score.append(folder)
+    # else:
+    #     dirs_to_score.append(folder)
 
     if not not_scored:
         scored_dirs.append(folder)
+    else:
+        dirs_to_score.append(folder)
+
 nonempty_dirs = [x for x in existing_dirs if x not in empty_dirs]
 
 print('{:.2f}% ({}/{}) NonEmpty!'.format(100 *
@@ -96,8 +101,9 @@ print('{:.2f}% ({}/{}) Has Pickle lengths matching Smiles!'.format(100 *
       (len(list(set(pickle_and_smi)))/len(existing_dirs)), len(pickle_and_smi), len(existing_dirs)))
 print('{:.2f}% ({}/{}) Scored!'.format(100 *
       (len(list(set(scored_dirs)))/len(existing_dirs)), len(scored_dirs), len(existing_dirs)))
-print('len(dirs_to_score): {}'.format(len(dirs_to_score)))
-print('len(mpi_dirs_to_score): {}'.format(len(mpi_dirs_to_score)))
+both = list(set(dirs_to_score).union(set(mpi_dirs_to_score)))
+print('{:.2f}% ({}/{}) To Score!'.format(100 *
+                                         (len(both)/len(existing_dirs)), len(both), len(existing_dirs)))
 
 f = open('dirs/nonempty.txt', 'w')
 for line in nonempty_dirs:
@@ -119,7 +125,7 @@ f = open('dirs/dirs_to_score.txt', 'w')
 for line in dirs_to_score:
     f.write(line+'\n')
 f.close()
-f = open('dirs/mpi_dirs_to_score.txt', 'w')
-for line in mpi_dirs_to_score:
-    f.write(line+'\n')
-f.close()
+# f = open('dirs/mpi_dirs_to_score.txt', 'w')
+# for line in mpi_dirs_to_score:
+#     f.write(line+'\n')
+# f.close()
