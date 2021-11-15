@@ -18,6 +18,14 @@ from sklearn.model_selection import GridSearchCV
 fdefFile = os.path.join(RDDataDir,'BaseFeatures.fdef')
 featFactory = ChemicalFeatures.BuildFeatureFactory(fdefFile)
 
+
+def return_borders(index, dat_len, mpi_size):
+    mpi_borders = np.linspace(0, dat_len, mpi_size + 1).astype('int')
+
+    border_low = mpi_borders[index]
+    border_high = mpi_borders[index+1]
+    return border_low, border_high
+
 def return_random_dataframe(mols, interesting_pcores, weights=None, hit=False, jiggle=False, jiggle_std=1.2):
     """ 
     retun dictionary of numpy arrays containing (x,y,z) of pharmacophore coordinates (averaged over atoms)
