@@ -47,8 +47,10 @@ def score_folders(folder_names, kde_dict, target_name):
                                     -1, 1)
                                 df.at[i, combo] = score_dist(kde, real_dist)
 
+                        scores = df[pairs].to_numpy().astype(float)
+                        scores[np.all(np.isnan(scores), axis=1)] = -100
                         df['mean_score'] = np.nanmean(
-                            df[pairs].to_numpy(), axis=1)
+                            scores, axis=1)
                         df.to_csv(folder+'/scores_' +
                                   target_name+'.csv', index=False)
 
@@ -70,8 +72,10 @@ def score_folders(folder_names, kde_dict, target_name):
                         df = pd.DataFrame.from_dict(scores, orient='index')
                         df.index = df.index.rename('smiles')
                         df = df.reset_index()
+                        scores = df[pairs].to_numpy().astype(float)
+                        scores[np.all(np.isnan(scores), axis=1)] = -100
                         df['mean_score'] = np.nanmean(
-                            df[pairs].to_numpy(), axis=1)
+                            scores, axis=1)
                         df.to_csv(folder+'/scores_' +
                                   target_name+'.csv', index=False)
                     else:
@@ -88,8 +92,8 @@ def score_folders(folder_names, kde_dict, target_name):
                     folder, not_found.filename))
                 continue
             except TypeError:
-                logging.warning('{}: pickle type error'.format(
-                    folder))
+                logging.warning('{}: pickle type error, type is {}'.format(
+                    folder, type(list(twobody_dist)[0])))
                 continue
             logging.info('{} Done!'.format(folder))
         else:

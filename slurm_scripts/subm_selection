@@ -1,0 +1,21 @@
+#!/bin/bash
+#SBATCH -J mpi_butina_selection
+#SBATCH --time=0:30:00
+#SBATCH -A LEE-WJM41-SL2-CPU
+#SBATCH --nodes=1
+#SBATCH --ntasks=19
+#SBATCH --cpus-per-task=4
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=wjm41@cam.ac.uk
+##SBATCH --no-requeue
+#SBATCH -p icelake-himem
+
+. /etc/profile.d/modules.sh
+module purge
+module load rhel8/default-icl
+module load miniconda/3
+source activate fresco
+
+# python butina_selection.py -target $1 --useFeatures
+
+mpirun -np 19 -ppn 19 python butina_selection_mpi.py -target $1 --useFeatures

@@ -1,0 +1,41 @@
+#!/bin/bash
+#SBATCH -J score_mpi_$target
+#SBATCH -A LEE-WJM41-SL2-CPU
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --time=2:00:00
+#SBATCH --array=0-55
+#SBATCH --mail-user=wjm41@cam.ac.uk
+#SBATCH --mail-type=END,FAIL
+#SBATCH -p cclake
+
+. /etc/profile.d/modules.sh
+module purge
+module load rhel7/default-ccl
+module load miniconda/3
+source activate felix_md
+
+data_dir=/rds-d2/user/wjm41/rds-enaminereal-ZNFRY9wKoeE/EnamineREAL/folds/mpi_pickles
+if [ $SLURM_ARRAY_TASK_ID -lt 10 ]; then
+echo fold0$SLURM_ARRAY_TASK_ID
+folder=fold0$SLURM_ARRAY_TASK_ID
+else 
+echo fold$SLURM_ARRAY_TASK_ID
+folder=fold$SLURM_ARRAY_TASK_ID
+fi
+
+# if [ $SLURM_ARRAY_TASK_ID -lt 10 ]; then
+# echo 00$SLURM_ARRAY_TASK_ID
+# folder=score_fold00$SLURM_ARRAY_TASK_ID
+# elif [ $SLURM_ARRAY_TASK_ID -lt 100 ]; then
+# echo 0$SLURM_ARRAY_TASK_ID
+# folder=score_fold0$SLURM_ARRAY_TASK_ID
+# else 
+# echo $SLURM_ARRAY_TASK_ID
+# folder=score_fold$SLURM_ARRAY_TASK_ID
+# fi
+
+script_dir=/rds-d2/user/wjm41/rds-enaminereal-ZNFRY9wKoeE/EnamineREAL/scripts
+
+python $script_dir/score_mpi.py -fname $data_dir/$folder -target $target

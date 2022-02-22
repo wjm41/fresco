@@ -1,0 +1,47 @@
+#!/bin/bash
+#SBATCH -J big_fold2_mac
+#SBATCH -A LEE-SL3-CPU
+#SBATCH --nodes=1
+#SBATCH --ntasks=56
+#SBATCH --cpus-per-task=1
+#SBATCH --time=12:00:00
+#SBATCH --mail-user=wjm41@cam.ac.uk
+#SBATCH --mail-type=END,FAIL
+#SBATCH -p cclake
+
+. /etc/profile.d/modules.sh
+module purge
+module load rhel7/default-ccl
+module load miniconda/3
+source activate felix_md
+
+MPI_SIZE=55
+echo $1
+n_fold=0
+tot=$(wc -l $1 | cut -d' ' -f 1)
+
+while read fname; do
+n_fold=$(expr $n_fold + 1)
+percent=$(($n_fold * 100 / $tot))
+echo "Folder Number $n_fold / $tot ($percent % done)"
+
+#if [ -s $fname/mols.sdf ] # sdf exists
+if ! [ -f $fname/done.txt ] # touch.txt doesn't exist
+then
+
+for n in {0..11}; do
+echo "Doing $n-th processing for $fname"
+mpirun -np $MPI_SIZE -ppn $MPI_SIZE python mpi_process_mac.py $fname $n 12 > /dev/null < /dev/null
+cat $fname/mols_cleanup_${n}_mpi_* > $fname/mols${n}_new.smi
+mv $fname/mols${n}_new.smi $fname/mols${n}.smi
+rm $fname/mols_cleanup_${n}_mpi_*
+rm $fname/pairs_cleanup_${n}_mpi_*
+done
+
+else
+echo "$fname has no SDF!"
+fi
+touch $fname/done.txt
+#rm $fname/mols.sdf
+done<$1
+

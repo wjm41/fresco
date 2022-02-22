@@ -5,6 +5,7 @@ import pickle
 import dill as pickle
 
 import numpy as np
+from numpy.lib.arraysetops import isin
 import pandas as pd
 from tqdm import tqdm
 
@@ -31,76 +32,91 @@ def score_mpi_folders(folder_names, kde_dict, target_name):
                     # if True:
                     twobody_dist = pickle.load(
                         open(folder+'/pairs_mpi_'+str(mpi_ind)+'.pickle', 'rb'))
+                    if len(twobody_dist) != 0:
 
-                    if isinstance(list(twobody_dist)[0], dict):
-                        # print('dict')
-                        real_smi = open(folder+'/mols'+str(mpi_ind)+'.smi',
-                                        'r').read().splitlines()
-                        assert len(real_smi) == len(twobody_dist)
+                        # fix silly shit
+                        if isinstance(twobody_dist, list) and isinstance(twobody_dist[0], list):
+                            concat_dist = []
+                            for x in twobody_dist:
+                                concat_dist = concat_dist + x
+                            twobody_dist = concat_dist
 
-                        df = pd.DataFrame(columns=['smiles']+pairs)
-                        df['smiles'] = real_smi
-                        # scores = {}
+                        elif isinstance(list(twobody_dist)[0], dict):
+                            # print('dict')
+                            real_smi = open(folder+'/mols'+str(mpi_ind)+'.smi',
+                                            'r').read().splitlines()
+                            assert len(real_smi) == len(twobody_dist)
 
-                        for combo in pairs:
-                            kde = kde_dict[combo]
+                            df = pd.DataFrame(columns=['smiles']+pairs)
+                            df['smiles'] = real_smi
+                            # scores = {}
 
-                            # combo_scores = np.empty((len(twobody_dist)))
-                            for i in range(len(twobody_dist)):
-                                real_dist = twobody_dist[i][combo][0].reshape(
-                                    -1, 1)
-                                df.at[i, combo] = score_dist(kde, real_dist)
-                            #     try:
-                            #         ith_score = np.abs(kde.score_samples(
-                            #             twobody_dist[i][combo][0].reshape(-1, 1)))
-                            #         combo_scores[i] = np.mean(ith_score)
-
-                            #         print(np.amin(combo_scores))
-                            #         print(np.amax(combo_scores))
-                            #     except:
-                            #         combo_scores[i] = np.nan
-
-                            # scores[combo] = combo_scores
-
-                            # df = pd.DataFrame.from_dict(scores)
-                            # df['smiles'] = real_smi
-                            # df = df[['smiles']+pairs]
-
-                        scores = df[pairs].to_numpy()
-                        df['mean_score'] = np.nanmean(
-                            scores, axis=1)
-                        df.to_csv(folder+'/scores'+str(mpi_ind) +
-                                  '_'+target_name+'.csv', index=False)
-
-                    elif isinstance(list(twobody_dist)[0], str):
-                        # print('string')
-                        scores = {}
-
-                        for smi in twobody_dist:
-                            score = {}
                             for combo in pairs:
                                 kde = kde_dict[combo]
-                                real_dist = twobody_dist[smi][combo][0].reshape(
-                                    -1, 1)
-                                score[combo] = score_dist(kde, real_dist)
-                                # try:
-                                #     ith_score = np.abs(kde.score_samples(
-                                #         twobody_dist[smi][combo][0].reshape(-1, 1)))
-                                #     score[combo] = np.mean(ith_score)
-                                # except:
-                                #     score[combo] = np.nan
 
-                            scores[smi] = score
+                                # combo_scores = np.empty((len(twobody_dist)))
+                                for i in range(len(twobody_dist)):
+                                    real_dist = twobody_dist[i][combo][0].reshape(
+                                        -1, 1)
+                                    df.at[i, combo] = score_dist(
+                                        kde, real_dist)
+                                #     try:
+                                #         ith_score = np.abs(kde.score_samples(
+                                #             twobody_dist[i][combo][0].reshape(-1, 1)))
+                                #         combo_scores[i] = np.mean(ith_score)
 
-                        df = pd.DataFrame.from_dict(scores, orient='index')
-                        df.index = df.index.rename('smiles')
-                        df = df.reset_index()
-                        df['mean_score'] = np.nanmean(
-                            df[pairs].to_numpy(), axis=1)
-                        df.to_csv(folder+'/scores'+str(mpi_ind) +
-                                  '_'+target_name+'.csv', index=False)
+                                #         print(np.amin(combo_scores))
+                                #         print(np.amax(combo_scores))
+                                #     except:
+                                #         combo_scores[i] = np.nan
+
+                                # scores[combo] = combo_scores
+
+                                # df = pd.DataFrame.from_dict(scores)
+                                # df['smiles'] = real_smi
+                                # df = df[['smiles']+pairs]
+
+                            scores = df[pairs].to_numpy().astype(float)
+                            scores[np.all(np.isnan(scores), axis=1)] = -100
+                            df['mean_score'] = np.nanmean(
+                                scores, axis=1)
+                            df.to_csv(folder+'/scores'+str(mpi_ind) +
+                                      '_'+target_name+'.csv', index=False)
+
+                        elif isinstance(list(twobody_dist)[0], str):
+                            # print('string')
+                            scores = {}
+
+                            for smi in twobody_dist:
+                                score = {}
+                                for combo in pairs:
+                                    kde = kde_dict[combo]
+                                    real_dist = twobody_dist[smi][combo][0].reshape(
+                                        -1, 1)
+                                    score[combo] = score_dist(kde, real_dist)
+                                    # try:
+                                    #     ith_score = np.abs(kde.score_samples(
+                                    #         twobody_dist[smi][combo][0].reshape(-1, 1)))
+                                    #     score[combo] = np.mean(ith_score)
+                                    # except:
+                                    #     score[combo] = np.nan
+
+                                scores[smi] = score
+
+                            df = pd.DataFrame.from_dict(scores, orient='index')
+                            df.index = df.index.rename('smiles')
+                            df = df.reset_index()
+                            scores = df[pairs].to_numpy().astype(float)
+                            scores[np.all(np.isnan(scores), axis=1)] = -100
+                            df['mean_score'] = np.nanmean(
+                                scores, axis=1)
+                            df.to_csv(folder+'/scores'+str(mpi_ind) +
+                                      '_'+target_name+'.csv', index=False)
+                        else:
+                            raise TypeError
                     else:
-                        raise TypeError
+                        logging.warning(
+                            '{} zero pickle length!'.format(folder))
             except AssertionError:
                 logging.warning(
                     '{} length assertion error: {} vs {}'.format(

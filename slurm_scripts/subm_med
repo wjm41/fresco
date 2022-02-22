@@ -1,0 +1,19 @@
+#!/bin/bash
+#SBATCH -J med_fold
+#SBATCH -A LEE-SL3-CPU
+#SBATCH --nodes=1
+#SBATCH --ntasks=12
+#SBATCH --cpus-per-task=1
+#SBATCH --time=12:00:00
+#SBATCH --mail-user=wjm41@cam.ac.uk
+#SBATCH --mail-type=END,FAIL
+#SBATCH -p skylake-himem
+
+. /etc/profile.d/modules.sh
+module purge
+module load rhel7/default-peta4
+module load miniconda/3
+source activate felix_md
+
+echo $1
+mpirun -np 12 -ppn 12 python mpi_process.py $1

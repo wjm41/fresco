@@ -1,0 +1,19 @@
+#!/bin/bash
+#SBATCH -J dmat_calc
+#SBATCH --time=1:00:00
+#SBATCH -A LEE-WJM41-SL2-CPU
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=12
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=wjm41@cam.ac.uk
+##SBATCH --no-requeue
+#SBATCH -p cclake
+
+. /etc/profile.d/modules.sh
+module purge
+module load rhel7/default-ccl
+module load miniconda/3
+source activate fresco
+
+python dmat_calc.py

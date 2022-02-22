@@ -1,0 +1,30 @@
+#!/bin/bash
+#SBATCH -J bad_dirs2
+#SBATCH -A LEE-SL3-CPU
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --time=12:00:00
+#SBATCH --array=0-97
+#SBATCH --mail-user=wjm41@cam.ac.uk
+#SBATCH --mail-type=END,FAIL
+#SBATCH -p cclake
+
+. /etc/profile.d/modules.sh
+module purge
+module load rhel7/default-ccl
+module load miniconda/3
+source activate felix_md
+module load gcc/5
+module load openbabel/2.4.0
+
+if [ $SLURM_ARRAY_TASK_ID -lt 10 ]; then
+echo 00$SLURM_ARRAY_TASK_ID
+./extract.sh tranch00$SLURM_ARRAY_TASK_ID
+elif [ $SLURM_ARRAY_TASK_ID -lt 100 ]; then
+echo 0$SLURM_ARRAY_TASK_ID
+./extract.sh tranch0$SLURM_ARRAY_TASK_ID
+else 
+echo $SLURM_ARRAY_TASK_ID
+./extract.sh tranch$SLURM_ARRAY_TASK_ID
+fi

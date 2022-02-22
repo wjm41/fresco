@@ -1,0 +1,17 @@
+# Protein data folders
+data/DPP11/
+data/Mac1/
+data/Mpro
+
+# Enaminereal molecules, folders, and topN 
+data/EnamineREAL_sym/
+data/EnamineREAL/data
+data/EnamineREAL/folds
+data/EnamineREAL/topN
+
+# KDE pickles
+*.pickle
+*.pdb
+
+# VSCode
+settings.json

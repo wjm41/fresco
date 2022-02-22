@@ -1,0 +1,28 @@
+#!/bin/bash
+#SBATCH -J clean_smiles_mpi2
+#SBATCH -A LEE-SL3-CPU
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --array=0-98
+#SBATCH --time=12:00:00
+#SBATCH --mail-user=wjm41@cam.ac.uk
+#SBATCH --mail-type=END,FAIL
+#SBATCH -p cclake
+
+. /etc/profile.d/modules.sh
+module purge
+module load rhel7/default-ccl
+module load miniconda/3
+source activate felix_md
+#module load gcc/5
+#module load openbabel/2.4.0
+
+#./get_smiles.sh $1
+if [ $SLURM_ARRAY_TASK_ID -lt 10 ]; then
+python clean_smiles_mpi.py mpi_smiles_fold00$SLURM_ARRAY_TASK_ID
+elif [ $SLURM_ARRAY_TASK_ID -lt 100 ]; then
+python clean_smiles_mpi.py mpi_smiles_fold0$SLURM_ARRAY_TASK_ID
+else 
+python clean_smiles_mpi.py mpi_smiles_fold$SLURM_ARRAY_TASK_ID
+fi
