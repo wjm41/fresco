@@ -9,6 +9,7 @@
 #SBATCH --mail-user=wjm41@cam.ac.uk
 ##SBATCH --no-requeue
 #SBATCH -p icelake-himem
+#SBATCH --output=/home/wjm41/ml_physics/frag-pcore-screen/slurm_logs/subm_selection.out
 
 . /etc/profile.d/modules.sh
 module purge
@@ -17,5 +18,7 @@ module load miniconda/3
 source activate fresco
 
 # python butina_selection.py -target $1 --useFeatures
+script_dir=/home/wjm41/ml_physics/frag-pcore-screen/scripts
+# mpirun -np 19 -ppn 19 python butina_selection_mpi.py -target $1 --useFeatures
 
-mpirun -np 19 -ppn 19 python butina_selection_mpi.py -target $1 --useFeatures
+mpirun -np 19 -ppn 19 python $script_dir/butina_selection_mpi.py -target $1 --useFeatures --topN 10000 --suffix test_10k
