@@ -9,10 +9,12 @@ data/EnamineREAL/data
 data/EnamineREAL/folds
 data/EnamineREAL/topN
 
-# KDE pickles
+# KDE pickles and distance matrix numpy arrays
 *.pickle
 *.pkl
 *.pdb
+notebooks/numpy
+notebooks/pickles
 
 # VSCode
 settings.json
