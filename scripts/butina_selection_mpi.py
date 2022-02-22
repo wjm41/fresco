@@ -29,7 +29,7 @@ def main(args):
     mpi_size = mpi_comm.Get_size()
 
     df = pd.read_csv(args.data_dir+'topN_taut_filtered_' +
-                     args.target+'.csv')
+                     args.target+'.csv', nrows=args.topN)
 
     df.reset_index(drop=True, inplace=True)
 
@@ -75,14 +75,14 @@ def main(args):
     mpi_comm.Barrier()
 
     if mpi_rank == 0:
-        if args.useFeatures:
-
-            np.save('numpy/mpi_dmat_constrained_taut_' +
-                    args.target+'.npy', d_mat)
-        else:
-
-            np.save('numpy/mpi_dmat_constrained_taut_' +
-                    args.target+'_noFeatures.npy', d_mat)
+        # if args.useFeatures:
+        #
+        #     np.save('numpy/mpi_dmat_constrained_taut_' +
+        #             args.target+'.npy', recv_dmat)
+        # else:
+        #
+        #     np.save('numpy/mpi_dmat_constrained_taut_' +
+        #             args.target+'_noFeatures.npy', recv_dmat)
 
         print(recv_dmat)
         clusters = ClusterData(recv_dmat, nPts=len(
@@ -123,6 +123,8 @@ if __name__ == "__main__":
                         help='Scoring method for the molecules.')
     parser.add_argument('-target', '--target', type=str,
                         help='Protein target.')
+    parser.add_argument('-topN', '--topN', type=int, default=50000,
+                        help='Number of molecules to cluster.')
     parser.add_argument('--useFeatures', '--useFeatures', action='store_true', default=False,
                         help='Whether or not to use pharmacophore features in the fingerprint calculation.')
     parser.add_argument('-thresh', '--thresh', type=float, default=0.2,
