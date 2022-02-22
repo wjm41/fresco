@@ -28,8 +28,8 @@ def main(args):
     mpi_rank = mpi_comm.Get_rank()
     mpi_size = mpi_comm.Get_size()
 
-    df = pd.read_csv(args.data_dir+'topN_taut_filtered_' +
-                     args.target+'.csv', nrows=args.topN)
+    df = pd.read_csv(f"{args.data_dir}/topN_taut_filtered_{args.target}.csv",
+                     nrows=args.topN)
 
     df.reset_index(drop=True, inplace=True)
 
@@ -106,18 +106,22 @@ def main(args):
         butina_df['membership'] = [len(clusters[n])
                                    for n in range(args.npicks)]
 
-        if args.useFeatures:
-            butina_df[['smiles', 'nonchiral', 'taut_smiles', 'membership']].to_csv(
-                args.data_dir+args.target+'_taut_picks_constrained_new.csv', index=False)
-        else:
-            butina_df[['smiles', 'nonchiral', 'taut_smiles', 'membership']].to_csv(
-                args.data_dir+args.target+'_taut_noFeatures_picks_constrained_new.csv', index=False)
+        butina_df[['smiles', 'nonchiral', 'taut_smiles', 'membership']].to_csv(
+            f"{args.data_dir}/{args.target}_{args.suffix}.csv", index=False)
+        # if args.useFeatures:
+        #     butina_df[['smiles', 'nonchiral', 'taut_smiles', 'membership']].to_csv(
+        #         args.data_dir+args.target+'_taut_picks_constrained_new.csv', index=False)
+        # else:
+        #     butina_df[['smiles', 'nonchiral', 'taut_smiles', 'membership']].to_csv(
+        #         args.data_dir+args.target+'_taut_noFeatures_picks_constrained_new.csv', index=False)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description='Trains a Molecular Transformer on a reaction dataset')
-    parser.add_argument('-data_dir', '--data_dir', type=str, default='/rds-d7/project/rds-ZNFRY9wKoeE/EnamineREAL/topN/',
+    parser.add_argument('-data_dir', '--data_dir', type=str, default='/rds-d7/project/rds-ZNFRY9wKoeE/EnamineREAL/topN',
+                        help='Directory containing topN molecules.')
+    parser.add_argument('-suffix', '--suffix', type=str, default='taut_picks_constrained',
                         help='Directory containing topN molecules.')
     parser.add_argument('-method', '--method', type=str,
                         help='Scoring method for the molecules.')
