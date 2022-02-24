@@ -13,9 +13,9 @@ A[(VirtualFlow)] --> B(Pharmacophore Descriptors)
 end
 
 subgraph Fragments
-Mpro --> PharmD(Pharmacophore Distributions)
-Mac-1 --> PharmD
-DPP11 --> PharmD
+Mpro[(Mpro)] --> PharmD(Pharmacophore Distributions)
+Mac-1[(Mac-1)] --> PharmD
+DPP11[(DPP11)] --> PharmD
 PharmD --> KDExact(scikit-learn KDE)
 KDExact --> Keep(Keep all pharmacophores!)
 Keep --> KDE(scipy interpolation)
@@ -44,9 +44,9 @@ A[(VirtualFlow)] --> B(Pharmacophore Descriptors)
 end
 
 subgraph Fragments
-Mpro --> PharmD(Pharmacophore Distributions)
-Mac-1 --> PharmD
-DPP11 --> PharmD
+Mpro[(Mpro)] --> PharmD(Pharmacophore Distributions)
+Mac-1[(Mac-1)]--> PharmD
+DPP11[(DPP11)] --> PharmD
 PharmD --> KDExact(scikit-learn KDE)
 KDExact --> KDE(KS Testing for ''importance'')
 end
