@@ -8,6 +8,8 @@ import pandas as pd
 
 from rdkit import Chem
 from rdkit.Chem import ChemicalFeatures, MolFromSmiles, MolToSmiles, AllChem
+from rdkit.Chem import Descriptors, Lipinski, rdMolDescriptors
+
 from rdkit import Geometry
 from rdkit.Chem.Pharm3D import Pharmacophore, EmbedLib
 from rdkit.RDPaths import RDDataDir
@@ -47,7 +49,7 @@ def file_size(file_path):
 
 
 def return_random_dataframe(mols, interesting_pcores, hit=False, jiggle=False, jiggle_std=1.2):
-    """ 
+    """
     retun dictionary of numpy arrays containing (x,y,z) of pharmacophore coordinates (averaged over atoms)
     """
     columns = ['mol_id', 'pcore', 'coord_x',
@@ -120,7 +122,7 @@ def return_random_dataframe(mols, interesting_pcores, hit=False, jiggle=False, j
 
 
 def return_pcore_dataframe(mols, interesting_pcores, hit=False, jiggle=False, jiggle_std=1.2):
-    """ 
+    """
     retun dictionary of numpy arrays containing (x,y,z) of pharmacophore coordinates (averaged over atoms)
     """
     columns = ['smiles', 'pcore', 'coord_x',
@@ -193,7 +195,7 @@ def return_pcore_dataframe(mols, interesting_pcores, hit=False, jiggle=False, ji
 
 def get_pair_distances(pcore_df, pcore_a, pcore_b, frag=False, active=False):
     '''
-    calculates the distribution of pair distances between pcore_a in either hits or frags with pcore_b 
+    calculates the distribution of pair distances between pcore_a in either hits or frags with pcore_b
 
     frag argument is to specify calculation of inter-frag distributions which require avoidance of intra-frag counting
     '''
@@ -353,8 +355,8 @@ def clean_smiles(smi_list, interesting_pcores=['Donor', 'Acceptor', 'Aromatic'])
     #     f.close()
     df = pd.DataFrame(smi_list, columns=['smi'])
     df['keep'] = False
-    #keep_list = [False]*len(smi_list)
-    #mol_ids = []
+    # keep_list = [False]*len(smi_list)
+    # mol_ids = []
     for i, row in df.iterrows():
         mol = Chem.MolFromSmiles(row['smi'])
         feats = featFactory.GetFeaturesForMol(mol)
@@ -365,14 +367,14 @@ def clean_smiles(smi_list, interesting_pcores=['Donor', 'Acceptor', 'Aromatic'])
 
                 if feat_fam in interesting_pcores:
                     df.loc[i, 'keep'] = True
-                    #keep_list[i] = True
+                    # keep_list[i] = True
                     # mol_ids.append(i)
 
-    #mol_ids = list(set(mol_ids))
-    #df['keep'] = keep_list
+    # mol_ids = list(set(mol_ids))
+    # df['keep'] = keep_list
     df = df[df['keep']]
     smi_list = df['smi'].values
-    #smi_list = [smi_list[i] for i in mol_ids]
+    # smi_list = [smi_list[i] for i in mol_ids]
     return smi_list
 
 
@@ -389,3 +391,39 @@ def score_dist(kde, dist):
         return score
     else:
         return np.nan
+
+
+def check_mol_lead_like(mol: Chem.rdchem.Mol) -> bool:
+
+    if mol.GetNumHeavyAtoms() > 25 or mol.GetNumHeavyAtoms() < 8:
+        return False
+    elif Descriptors.MolWt(mol) > 400 or Descriptors.MolWt(mol) < 109:
+        return False
+    elif Descriptors.MolLogP(mol) > 3.5 or Descriptors.MolLogP(mol) < -2.7:
+        return False
+    elif Descriptors.TPSA(mol) > 179 or Descriptors.TPSA(mol) < 3:
+        return False
+    elif Lipinski.NumHAcceptors(mol) > 8 or Lipinski.NumHAcceptors(mol) < 1:
+        return False
+    elif Lipinski.NumHDonors(mol) > 4:
+        return False
+    elif rdMolDescriptors.CalcNumRotatableBonds(mol) > 10:
+        return False
+    else:
+        return True
+
+
+def calculate_enrichment_for_df(score_df, n=10, score='score', index='active', log=False, ascending=True):
+
+    df = score_df[score_df[score].notna()]
+    orig_prop = len(df[df[index]])/len(df)
+    if log:
+        print('orig proportion of {}: {:.3f}%'.format(index, orig_prop*100))
+
+    sorted_df = df.sort_values(by=score, ascending=ascending).iloc[:n]
+    new_prop = len(sorted_df[sorted_df[index]])/len(sorted_df)
+    if log:
+        print('N = {}, n_hits = {}, new proportion of {}: {:.3f}%'.format(
+            n, len(sorted_df[sorted_df[index]]), index, new_prop*100))
+    EF = new_prop/orig_prop
+    return EF
