@@ -19,12 +19,15 @@ jobs:
 
       - uses: conda-incubator/setup-miniconda@v2
         with:
+          activate-environment: fresco
+          environment-file: environment.yml
           python-version: 3.9
 
       - name: Install fresco + dependencies
+        shell: bash -l {0}
         run: |
-          $CONDA/bin/conda env update --file environment.yml --prune
           pip install .
 
       - name: Run tests
-        run: $CONDA/bin/pytest --cov fresco
+        shell: bash -l {0}
+        run: pytest test/ --cov fresco --cov-report term-missing
