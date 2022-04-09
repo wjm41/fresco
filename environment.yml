@@ -171,7 +171,6 @@ dependencies:
     - kdepy==1.1.0
     - keyring==23.5.0
     - molplotly==0.12
-    - mpi4py==3.1.2
     - pillow==9.0.0
     - pkginfo==1.8.2
     - pytest==7.0.1
