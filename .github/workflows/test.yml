@@ -13,7 +13,7 @@ jobs:
       - name: Set up python
         uses: actions/setup-python@v2
         with:
-          python-version: 3.9
+          python-version: 3.7.10
           cache: pip
           cache-dependency-path: setup.py
 
@@ -21,7 +21,7 @@ jobs:
         with:
           activate-environment: fresco
           environment-file: environment.yml
-          python-version: 3.9
+          python-version: 3.7.10
 
       - name: Install fresco + dependencies
         shell: bash -l {0}
