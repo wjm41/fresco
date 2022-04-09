@@ -23,7 +23,7 @@ jobs:
 
       - name: Install fresco + dependencies
         run: |
-          conda env update --file enironment.yml --prune
+          conda env update --file environment.yml --prune
           pip install .
 
       - name: Run tests
