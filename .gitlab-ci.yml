@@ -1,0 +1,28 @@
+image: python:3.9
+
+stages:
+  - test
+  - pages
+
+before_script:
+  - export PYTHONPATH=fresco
+  - conda env create -f environment.yml
+  - conda init bash
+  - source ~/.bashrc    # <- !!!
+  - conda activate fresco
+
+test:
+  stage: test
+  script:
+    - pytest --cov=fresco test/
+    
+# pages:
+#   stage: pages
+#   script:
+#   - mkdocs build
+#   - mv site public
+#   artifacts:
+#     paths:
+#     - public
+#   only:
+#   - main
