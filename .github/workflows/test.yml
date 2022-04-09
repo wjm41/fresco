@@ -25,6 +25,7 @@ jobs:
         run: |
           conda env update --file environment.yml --prune
           pip install .
+          conda activate fresco
 
       - name: Run tests
         run: pytest --cov fresco
