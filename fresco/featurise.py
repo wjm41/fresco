@@ -147,43 +147,39 @@ def calculate_pairwise_distances_between_pharmacophores_for_fragment_ensemble(df
         distances_for_all_pairs = [np.array([])]
     return np.hstack(distances_for_all_pairs)
 
-
-def calculate_pairwise_distances_between_pharmacophores_for_single_molecule(pcore_df, pcore_a, pcore_b, frag=False):
+def calculate_pairwise_distances_between_pharmacophores_for_a_single_ligand(df_of_pcores_for_single_ligand, pcore_a, pcore_b):
     '''
-    calculates the distribution of pair distances between pcore_a in either hits or frags with pcore_b
-
-    frag argument is to specify calculation of inter-frag distributions which require avoidance of intra-frag counting
+    calculates the pairwise distance between pcore_a and pcore_b in the same ligand for a list of ligands
     '''
+    
+    assert len(df_of_pcores_for_single_ligand.unique()) == 1, 'This function is designed to work with a single ligand'
+    
+    df_pcore_a = df_of_pcores_for_single_ligand.query('pcore == @pcore_a')
+    coords_a = df_pcore_a[['coord_x', 'coord_y', 'coord_z']].to_numpy()
 
-    df_a = pcore_df[pcore_df['pcore'] == pcore_a]
-    id_a = df_a['mol_id']
-    coords_a = df_a[['coord_x', 'coord_y', 'coord_z']].to_numpy()
+    df_pcore_b = df_of_pcores_for_single_ligand.query('pcore == @pcore_b')
+    coords_b = df_pcore_b[['coord_x', 'coord_y', 'coord_z']].to_numpy()
 
-    df_b = pcore_df[pcore_df['pcore'] == pcore_b]
-    id_b = df_b['mol_id']
-    coords_b = df_b[['coord_x', 'coord_y', 'coord_z']].to_numpy()
 
-    all_distances = [None] * len(set(df_a['mol_id']))
-    for j, i in enumerate(set(df_a['mol_id'])):
-        try:
-            xyz_i = coords_a[id_a == i]  # DOUBLE COUNTING
+    if len(df_pcore_a) == 0:
+        logging.warning(f'No pharmacophores found for pharmacophore {pcore_a} !')
+    if len(df_pcore_b) == 0:
+        logging.warning(f'No pharmacophores found for pharmacophore {pcore_b} !')
 
-            if frag:
-                xyz_j = coords_b[id_b != i]  # INTER-FRAG COUNTING
-            else:
-                xyz_j = coords_b[id_b == i]  # INTRA-MOLECULE COUNTING
+    xyz_i = coords_a  # DOUBLE COUNTING
 
-            distance = xyz_i[:, np.newaxis] - xyz_j
+    xyz_j = coords_b  # Don't count distances within the same fragment
 
-            distance = np.linalg.norm(distance, axis=2)
+    if len(xyz_j) > 0:
+        delta_coordinates_between_pcores = xyz_i[:, np.newaxis] - xyz_j
 
-            distance = distance.flatten()
+        distances_for_this_pair = np.linalg.norm(delta_coordinates_between_pcores, axis=2)
 
-            all_distances[j] = distance
-        except Exception as ex:
-            print(ex)
-            pass
-    all_distances = [x for x in all_distances if x is not None]
-    if all_distances == []:
-        all_distances = [np.array([])]
-    return all_distances
+        distances_for_this_pair = distances_for_this_pair.flatten()
+        
+        return distances_for_this_pair
+    else: 
+        logging.warning(f"No {pcore_a}-{pcore_b} distance found for {df_of_pcores_for_single_ligand['mol_id'].values[0]}!")
+            
+        return [np.array([])]
+    
