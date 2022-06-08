@@ -15,6 +15,7 @@ data/EnamineREAL/topN
 *.pdb
 notebooks/numpy
 notebooks/pickles
+!kde_*
 
 # SLURM logs
 slurm_logs/
