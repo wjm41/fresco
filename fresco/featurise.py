@@ -136,12 +136,12 @@ def calculate_pairwise_distances_between_pharmacophores_for_fragment_ensemble(df
 
     df_pcore_a = df_of_frag_ensemble_pcores.query('pcore == @pcore_a')
     smiles_a = df_pcore_a['smiles']
-    weights_a = df_pcore_a['weight'].to_numpy()
+    weights_a = df_pcore_a['weight'].to_numpy().reshape(-1,1)
     coords_a = df_pcore_a[['coord_x', 'coord_y', 'coord_z']].to_numpy()
 
     df_pcore_b = df_of_frag_ensemble_pcores.query('pcore == @pcore_b')
     smiles_b = df_pcore_b['smiles']
-    weights_b = df_pcore_b['weight'].to_numpy()
+    weights_b = df_pcore_b['weight'].to_numpy().reshape(-1,1)
     coords_b = df_pcore_b[['coord_x', 'coord_y', 'coord_z']].to_numpy()
 
     if len(df_pcore_a) == 0:
@@ -156,14 +156,13 @@ def calculate_pairwise_distances_between_pharmacophores_for_fragment_ensemble(df
     
     for smiles_of_frag_with_pcore_a in smiles_a.unique():
         from_the_same_fragment = smiles_a == smiles_of_frag_with_pcore_a
-        
         xyz_i = coords_a[from_the_same_fragment, :]  # DOUBLE COUNTING
-        w_i = weights_a[from_the_same_fragment]
+        w_i = weights_a[from_the_same_fragment, :]
         
         # Don't count distances within the same fragment
         from_a_different_fragment = smiles_b != smiles_of_frag_with_pcore_a
         xyz_j = coords_b[from_a_different_fragment, :]
-        w_j = weights_b[from_a_different_fragment]
+        w_j = weights_b[from_a_different_fragment, :]
 
         if len(xyz_j) > 0:
             delta_coordinates_between_pcores = xyz_i[:, np.newaxis] - xyz_j
