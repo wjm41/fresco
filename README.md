@@ -1,5 +1,7 @@
 # Work journal for FRESCOE
 
+Repo is work-in-progress, getting cleaned in preparation for preprint upload!
+
 Fragment Ensemble Significant PharmaCOphore Extraction (FRESCOE) method for hit-finding from a fragment screen. FRESCOE uses unsupervised machine learning to model a distribution of pharmacophore combinations in 3D space, which is then used to conduct a virtual screen on the EnamineREAL library for discovery of moelcular hits. This method is unique in directly predicting hit compounds from a fragment screen without any assaying of binding activity required, and has demonstrated success computationally on a retrospective analysis of COVID Moonshot compounds as well as suggesting an experimentally validated novel scaffold for inhibiting the SARS-CoV-2 protease.
 
 ## Flowcharts
@@ -29,33 +31,6 @@ G -- "physchem (lead-like)\n plus constraint on \n donors + acceptors"--> H(Clus
 G -- pains --> H
 G -- "at most one chiral center" --> H
 G -- removed duplicate tautomers --> H
-
-end
-end
-```
-
-```mermaid
-flowchart TD
-subgraph v1
-subgraph EnamineREAL
-A[(VirtualFlow)] --> B(Pharmacophore Descriptors)
-end
-
-subgraph Fragments
-Mpro[(Mpro)] --> PharmD(Pharmacophore Distributions)
-Mac-1[(Mac-1)]--> PharmD
-DPP11[(DPP11)] --> PharmD
-PharmD --> KDExact(scikit-learn KDE)
-KDExact --> KDE(KS Testing for ''importance'')
-end
-
-subgraph Virtual Screening
-B --> Score(Score library with ''important'' pharmacophores)
-KDE --> Score
-Score --> Choose(Choose Top-10k)
-Choose --> G(Filtering)
-G -- "physchem (lead-like)" --> H(Clustering)
-G -- structural alerts --> H
 
 end
 end
