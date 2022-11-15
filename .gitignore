@@ -11,10 +11,11 @@ data/EnamineREAL/topN
 
 # KDE pickles and distance matrix numpy arrays
 *.pickle
-*.pkl
+# *.pkl
 *.pdb
 notebooks/numpy
 notebooks/pickles
+# !kde_*
 
 # SLURM logs
 slurm_logs/
