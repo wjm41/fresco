@@ -33,3 +33,7 @@ G -- remove duplicate tautomers --> H
 end
 end
 ```
+
+# Usage
+
+FRESCO functions can be used as a python library by importing the `fresco` module via `pip install .*` in the root directory of the repo.
