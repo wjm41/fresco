@@ -186,7 +186,7 @@ def calculate_pairwise_distances_between_pharmacophores_for_fragment_ensemble(df
 
     if len(distances_for_all_pairs) == 0:
         distances_for_all_pairs = [np.array([])]
-    return np.hstack(distances_for_all_pairs)
+    return np.hstack(distances_for_all_pairs), np.hstack(weights_for_all_pairs)
 
 
 def calculate_pairwise_distances_between_pharmacophores_for_a_single_ligand(df_of_pcores_for_single_ligand, pcore_a, pcore_b):

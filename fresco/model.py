@@ -15,9 +15,9 @@ def fit_sklearn_pair_kde(data):
 #     print(kde.get_params())
     return kde
 
-def fit_fast_kde_interpolator(data):
+def fit_fast_kde_interpolator(data, weights=None):
     # TODO - weights parameter not set 
-    kdepy_model = KDEpy.FFTKDE(kernel='gaussian', bw='ISJ').fit(data)
+    kdepy_model = KDEpy.FFTKDE(kernel='gaussian', bw='ISJ').fit(data, weights)
     kdepy_x, kdepy_y = kdepy_model.evaluate()       
 
     
@@ -25,9 +25,15 @@ def fit_fast_kde_interpolator(data):
     spline_approximation = interp1d(kdepy_x, np.log(kdepy_y), fill_value='extrapolate')
     return spline_approximation
 
-def fit_pair_kde(data):
-    
-    return fit_fast_kde_interpolator(data)
+def fit_fresco_on_pcore_histograms(dict_of_frag_ensemble_histograms,
+                                   pcore_pairs,
+                                   dict_of_frag_ensemble_weights=None):
+
+    fresco_kdes = {}
+    for pcore_pair in pcore_pairs:
+        fresco_kdes[pcore_pair] = fit_fast_kde_interpolator(dict_of_frag_ensemble_histograms[pcore_pair],
+                                                            weights=dict_of_frag_ensemble_weights[pcore_pair])
+    return fresco_kdes
 
 def score_dist(kde, dist):
     if len(dist):  # non-zero length
