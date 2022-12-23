@@ -115,9 +115,9 @@ def return_pcore_dataframe_for_list_of_mols(mols: List[Mol], smiles_list: List[s
 
         df_for_this_mol = return_pcore_dataframe_from_single_rdkit_molecule(
             mol, mol_id=mol_id, pcores_of_interest=pcores_of_interest, featFactory=featFactory)
-        df_for_this_mol['weight'] = weights[mol_id]
         
         if df_for_this_mol is not None:
+            df_for_this_mol['weight'] = weights[mol_id]
             dfs_for_this_list_of_mols.append(df_for_this_mol)
 
     if len(dfs_for_this_list_of_mols) == 0:
