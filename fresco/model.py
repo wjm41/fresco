@@ -33,11 +33,8 @@ def score_dist(kde, dist):
     if len(dist):  # non-zero length
 
         # log-prob (larger = higher prob)
-        # score using scipy spline!
         score = kde(dist.reshape(-1, 1))
-
-        # score = kde.score_samples(dist.reshape(-1,1))
-        score = np.mean(score)
+        score = np.max(score)
 
         return score
     else:
