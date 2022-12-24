@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 from scipy.interpolate import interp1d
 from sklearn.neighbors import KernelDensity
 from sklearn.model_selection import GridSearchCV
@@ -12,7 +13,6 @@ def fit_sklearn_pair_kde(data):
     grid = GridSearchCV(KernelDensity(kernel='gaussian', rtol=1e-4), params)
     grid.fit(data.reshape(-1, 1))
     kde = grid.best_estimator_
-#     print(kde.get_params())
     return kde
 
 def fit_fast_kde_interpolator(data, weights=None):
@@ -45,6 +45,21 @@ def score_dist(kde, dist):
     else:
         return np.nan
     
+def score_mol(kde_dict, pair_distribution_for_this_ligand, pcore_pairs):
+    score_df_for_this_molecule = pd.DataFrame(columns=pcore_pairs)
+
+    for pcore_combination in pcore_pairs:
+        kde_for_this_combination = kde_dict[pcore_combination]
+        pcore_dist = pair_distribution_for_this_ligand[pcore_combination].reshape(
+            -1, 1)
+        pcore_score = score_dist(kde_for_this_combination, pcore_dist)
+        score_df_for_this_molecule.at[0, pcore_combination] = pcore_score
+
+    scores = score_df_for_this_molecule[pcore_pairs].to_numpy().astype(
+        float)
+    score_for_this_molecule = np.nanmean(scores)
+    return score_for_this_molecule
+
 def load_kde_model(filename):
     with open(filename, 'rb') as f:
         kde_model = pickle.load(f)
