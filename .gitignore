@@ -1,7 +1,7 @@
 # Protein data folders
 data/DPP11/
-data/Mac1/
-data/Mpro
+# data/Mac1/
+data/Mpro/*.npy
 
 # Enaminereal molecules, folders, and topN 
 data/EnamineREAL_sym/
@@ -10,7 +10,7 @@ data/EnamineREAL/folds
 data/EnamineREAL/topN
 
 # KDE pickles and distance matrix numpy arrays
-*.pickle
+# *.pickle
 # *.pkl
 *.pdb
 notebooks/numpy
