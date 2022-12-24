@@ -41,6 +41,8 @@ Functions for utilising FRESCO can be used as a python library by importing the 
 
 The conda environment used for generating the results in the paper can be recreated by running `conda env create -f environment.yml` in the root directory of the repo.
 
+This has been tested on macOS and on linux.
+
 ## Example
 
 The demo notebook `demo.ipynb` contains a short example of how to train FRESCO on fragment-protein complexes, and use it to score a molecule.
