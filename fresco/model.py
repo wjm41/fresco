@@ -16,7 +16,6 @@ def fit_sklearn_pair_kde(data):
     return kde
 
 def fit_fast_kde_interpolator(data, weights=None):
-    # TODO - weights parameter not set 
     kdepy_model = KDEpy.FFTKDE(kernel='gaussian', bw='ISJ').fit(data, weights)
     kdepy_x, kdepy_y = kdepy_model.evaluate()       
 
