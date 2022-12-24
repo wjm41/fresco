@@ -1,0 +1,18 @@
+site,id
+A2 - Adenine site (UCSF),0
+I - Dimer interface (UCSF),1
+B2 - Oxyanion hole (UCSF),2
+K2 - K90 site (UCSF),3
+S2 - Surface (UCSF),4
+C2 - Catalytic site (UCSF),5
+K1 - K90 site (XChem),6
+X1 - Xtal contact (XChem),7
+E1 - Diphosphate site (UCSF),8
+B1 - Oxyanion hole (XChem),9
+A2 - Adenine Site (UCSF),10
+D1 - Glycine rich loop (XChem),11
+O - Other (UCSF),12
+D2 - Glycine rich loop (UCSF),13
+S1 - Surface (XChem),14
+A1 - Adenine site (XChem),15
+C1 - Catalytic site (XChem),16

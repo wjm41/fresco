@@ -1,0 +1,1 @@
+CC=1N=C(N)C=CC1Br

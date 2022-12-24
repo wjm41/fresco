@@ -1,0 +1,1 @@
+CCNCC1=CN(C)N=N1

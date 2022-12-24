@@ -1,0 +1,1 @@
+CC(NC(=O)C)c1cccc2ccccc12

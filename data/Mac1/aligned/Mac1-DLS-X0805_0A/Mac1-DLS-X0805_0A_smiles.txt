@@ -1,0 +1,1 @@
+COC1=CC([C@H]2[C@@H](C(O)=O)COCC2)=CC=C1

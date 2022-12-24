@@ -1,0 +1,1 @@
+CC(c1cc(Cl)cc(F)c1)NC(C)=O

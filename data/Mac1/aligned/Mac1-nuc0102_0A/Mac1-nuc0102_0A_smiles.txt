@@ -1,0 +1,1 @@
+CO[C@@H]1[C@@H](CO)O[C@@H](n2cnc3c(N)ncnc32)[C@@H]1O

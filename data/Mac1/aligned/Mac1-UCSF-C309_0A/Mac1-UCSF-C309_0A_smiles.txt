@@ -1,0 +1,1 @@
+CC=1C=CC=2C=C(NC2C1)C(=O)O

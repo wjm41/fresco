@@ -1,0 +1,1 @@
+CC=1C=C2C(=O)C(=O)NC2=C(Br)C1

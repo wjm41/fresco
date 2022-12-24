@@ -1,0 +1,1 @@
+CC(N(C)N(C1=O)c2ccccc2)=C1NS(C)(=O)=O

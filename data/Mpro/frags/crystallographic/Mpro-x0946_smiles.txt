@@ -1,0 +1,1 @@
+BrC1=CC=C(S(N)(=O)=O)C=C1

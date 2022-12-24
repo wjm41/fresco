@@ -1,0 +1,1 @@
+CC(C(=O)NC=1C=NC=CC1C)C=2C=CC=C(Cl)C2

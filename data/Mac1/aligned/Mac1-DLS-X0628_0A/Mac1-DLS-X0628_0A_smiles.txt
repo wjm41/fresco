@@ -1,0 +1,1 @@
+CC=1N=C(C)N(CCC(=O)O)N1

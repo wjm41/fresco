@@ -1,0 +1,1 @@
+CC(NC1=CC(Br)=CNC1=O)=O

@@ -1,0 +1,1 @@
+O=C(CC=1C=CC=NC1)NC=2C=NC=C(C#N)C2

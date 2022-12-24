@@ -1,0 +1,1 @@
+NC1=NC=2C(Cl)=CC=CC2S1

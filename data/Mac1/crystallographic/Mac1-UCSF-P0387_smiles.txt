@@ -1,0 +1,1 @@
+NC=1N=CC=C2C=CC=CC12

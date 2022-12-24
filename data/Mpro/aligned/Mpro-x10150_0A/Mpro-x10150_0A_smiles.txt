@@ -1,0 +1,1 @@
+CC(N1CCN(CCNC(c2cccc3ccccc23)=O)CC1)=O

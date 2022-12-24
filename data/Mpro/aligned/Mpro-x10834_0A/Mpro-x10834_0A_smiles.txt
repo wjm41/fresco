@@ -1,0 +1,1 @@
+COC=1C=CN=CC1NC(=O)C(O)C=2C=CC=C(Br)C2

@@ -1,0 +1,1 @@
+CCNC=1C=CC(C#N)=CN1
