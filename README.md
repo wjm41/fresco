@@ -41,7 +41,13 @@ Functions for utilising FRESCO can be used as a python library by importing the 
 
 The conda environment used for generating the results in the paper can be recreated by running `conda env create -f environment.yml` or `environment_mac.yml` in the root directory of the repo. The `fresco` module has to be installed in this environment via `pip install .*` in the root directory of the repo.
 
-This has been tested on intel macOS and on linux. Currently figuring out how to get the environment working on Apple silicon macOS!
+This has been tested on intel macOS and on linux. For apple silicon macOS, it seems like `kdepy` is causing an issue, so the `environment_mac.yml` file does not include `kdepy` - to install that, run:
+```
+git clone git@github.com:tommyod/KDEpy.git
+cd KDEpy
+pip install .
+```
+as detailed [here](https://github.com/tommyod/KDEpy/issues/114).
 
 ## Example
 
