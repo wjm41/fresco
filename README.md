@@ -39,9 +39,9 @@ end
 
 Functions for utilising FRESCO can be used as a python library by importing the `fresco` module via `pip install .*` in the root directory of the repo, which should only take several seconds.
 
-The conda environment used for generating the results in the paper can be recreated by running `conda env create -f environment.yml` in the root directory of the repo.
+The conda environment used for generating the results in the paper can be recreated by running `conda env create -f environment.yml` or `environment_mac.yml` in the root directory of the repo. The `fresco` module has to be installed in this environment via `pip install .*` in the root directory of the repo.
 
-This has been tested on macOS and on linux.
+This has been tested on intel macOS and on linux. Currently figuring out how to get the environment working on Apple silicon macOS!
 
 ## Example
 
